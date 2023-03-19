@@ -1,0 +1,281 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+    <title>Hello, world!</title>
+  </head>
+  <style>
+    
+  </style>
+  <body>
+  <form action="">
+    <div class="col-md-4 mb-3">
+ 
+  <h1 class="text-center">Add Item</h1>
+  <input  type="text" class="form-control" id="itemn" placeholder="Item Name" required><br>
+  <input  type="number" class="form-control" id="itemq" placeholder="Item Qty" required><br>
+  <input  type="number" class="form-control" id="itemp" placeholder="Item Price" required><br>
+
+<button class="btn btn-outline-primary" onclick="add()">Add Item</button>
+</div>
+</form>
+<div id="table">
+
+</div>
+
+<script>
+var tabledata = [{
+  name:"Moniter",
+qty:3,
+price:100,
+totalprice:300,
+id:1
+}];
+
+function displaydata() {
+  var html = `<table border="1px" class="table">`;
+  html += "<tr>";
+    html += "<td>Sr id</td>";
+  html += "<td>Item Name</td>";
+  html += "<td>Item Qty</td>";
+  html += "<td>Item Price</td>";
+  html += "<td>Total Price</td>";
+  html += "<td>Action</td>";
+  html += "<td>Purchas Item</td>";
+  html += "</tr>";
+  for (var i = 0; i < tabledata.length; i++) {
+    var sno=i+1
+    html += "<tr>";
+      html += "<td>"+ sno+"</td>";
+      html += "<td>" + tabledata[i].name + "</td>";
+    html += "<td>" + tabledata[i].qty + "</td>";
+    html += "<td>" + tabledata[i].price + "</td>";
+    html += "<td>" + tabledata[i].totalprice + "</td>";
+    html += `<td> <button class='btn btn-outline-danger' onclick='remove(${tabledata[i].id})' >Remove</button>`;
+      html += `<td> <button class='btn btn-outline-success ms-3' onclick='buy(${tabledata[i].id})' >Buy</button>`;
+      html += "</tr>";
+
+  }
+  html += "</table>";
+  document.getElementById("table").innerHTML = html;
+}
+
+displaydata();
+
+function add() {
+  var itemName = document.getElementById("itemn").value;
+  var itemQty = document.getElementById("itemq").value;
+  var itemPrice = document.getElementById("itemp").value;
+  var itemTotal = itemQty * itemPrice;
+
+if (itemName && itemQty && itemPrice) {
+  let id = tabledata.length + 1;
+  tabledata.push({
+    name: itemName,
+    qty: itemQty,
+    price: itemPrice,
+    totalprice: itemTotal,
+    id: id
+  });
+  displaydata();
+  document.getElementById("itemn").value = "";
+  document.getElementById("itemq").value = "";
+    document.getElementById("itemp").value = "";
+} else {
+  alert("Please fill all fields.");
+}
+}
+
+function remove(rec){
+console.log(rec);
+var felt=tabledata.filter((a,i)=>{
+if(rec==a.id){
+tabledata.splice(i,1);
+displaydata();
+
+
+
+}
+
+
+
+
+
+})
+console.log(tabledata);
+
+}
+function buy(id) {
+
+  const item = tabledata[id - 1];
+        const quantity = parseInt(prompt(`How much ${item.name} do you want to buy?`));
+        if(quantity===quantity ){
+        if (quantity <= item.qty) {
+          // Item is in stock, so proceed with the order
+          item.qty -= quantity;
+          item.totalprice = item.qty * item.price;
+      
+      
+        
+    
+  (async () => {
+    const { value: formValues } = await Swal.fire({
+      title: 'Order Details',
+      html: `
+        <input id="swal-input1" type="textarea" class="swal2-input" placeholder="Full Name">
+        <input id="swal-input2" type="text" class="swal2-input" placeholder="Address">
+        <input id="swal-input3" type="number" class="swal2-input" placeholder="Phone No">
+        <select id="swal-input4" class="swal2-input">
+          <option>Easy Paisa</option>
+          <option>JazzCash</option>
+          <option>Meezan Bank</option>
+        </select>
+        <input id="swal-input5" type="date" class="swal2-input" placeholder="Payment Date">`,
+      focusConfirm: false,
+      preConfirm: () => {
+        return [
+          document.getElementById('swal-input1').value,
+          document.getElementById('swal-input2').value,
+          document.getElementById('swal-input3').value,
+          document.getElementById('swal-input4').value,
+          document.getElementById('swal-input5').value
+        ];
+      }
+    });
+
+    if (formValues) {
+      // The form was submitted, so continue with the order
+      const [address, name, phone, paymentMethod, paymentDate] = formValues;
+      if (address && name && phone && paymentMethod && paymentDate) {
+        // All required fields are filled out, so process the order
+        if (item.qty === 0) {
+            // Remove item from tabledata if it's out of stock
+            tabledata.splice(id - 1, 1);
+          }
+          displaydata();
+        alert("Order booked successfully!");
+      } else {
+        // Required fields are missing
+        alert("Please fill out all the required fields");
+      }
+    }
+    
+  })();
+} else {
+          // Item is out of stock
+          alert(`Only ${item.qty} units of ${item.name} are available`);
+        }
+
+}
+      else{
+        alert("Please fill this field")
+      }
+}
+
+// function buy(id){
+
+// // var user=prompt("How Much You want");
+// // if(user<=tabledata[id-1].qty){
+// //   alert("Item Succefully Buy")
+// // tabledata[id-1].qty-=user;
+// // tabledata[id-1].totalprice=tabledata[id-1].qty * tabledata[id-1].price;
+// // if(tabledata[id-1].qty===0){
+// // tabledata.splice(id-1,1)
+
+
+  
+// // }
+// // displaydata();
+// // }
+// // else {
+// //   alert("invalid ")
+// // }
+// (async () => {
+
+// const { value: formValues } = await Swal.fire({
+//   title: 'Multiple inputs',
+//   html:
+//   'Ful Name <input id="swal-input2" type="text" class="swal2-input">'+
+//     'Address <input id="swal-input1" type="textarea" class="swal2-input">' +
+//     'Phone No <input id="swal-input3" type="number" class="swal2-input">'+
+//     'Mode Of Payment <select id="swal-input4" type="number" class="swal2-input"><option>Easy Paisa</option><option>JazzCash</option><option>Meezan Bank</option> </select>'+
+//     "payment date"+'<input id="swal-input5" type="date" class="swal2-input">',
+ 
+//   // focusConfirm: false,
+//   // preConfirm: () => {
+//   //   return [
+//   //     document.getElementById('swal-input2').value,
+//   //     document.getElementById('swal-input1').value,
+//   //     document.getElementById('swal-input3').value,
+//   //     document.getElementById('swal-input4').value,
+//   //     document.getElementById('swal-input5').value
+//   //   ]
+//   // }
+
+// }
+// )
+// var det1=document.getElementById('swal-input1').value;
+// var det2=document.getElementById('swal-input2').value;
+// var det3=document.getElementById('swal-input3').value;
+// var det4=document.getElementById('swal-input4').value;
+// var det5=document.getElementById('swal-input5').value;
+
+// if(det1===det1&&det2===det2&&det3===det3&&det4===det4&&det5===det5 ){
+//   if (formValues) {
+//     // Swal.fire(JSON.stringify(formValues))
+//     alert("Order Book")
+//   }
+
+
+// }
+// else{
+//   alert("FIll this Field")
+// }
+
+// })()
+
+
+
+
+
+// }
+
+
+// console.log(tabledata);
+
+
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+</table>
+
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- Optional JavaScript; choose one of the two! -->
+
+    <!-- Option 1: Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+
+    <!-- Option 2: Separate Popper and Bootstrap JS -->
+    <!--
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
+    -->
+  </body>
+</html>
